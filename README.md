@@ -1,5 +1,9 @@
 # mkdocs-multisource-docs
 
+[![PyPI version](https://img.shields.io/pypi/v/mkdocs-multisource-docs)](https://pypi.org/project/mkdocs-multisource-docs/)
+![License](https://img.shields.io/pypi/l/mkdocs-multisource-docs)
+![Python versions](https://img.shields.io/pypi/pyversions/mkdocs-multisource-docs)
+
 The `mkdocs-multisource-docs` plugin is designed to automate the process of collecting documentation from multiple GitLab repositories and integrating it into the documentation of the current repository. This is particularly useful for projects that rely on documentation spread across multiple repositories, ensuring a unified and up-to-date documentation experience.
 
 ## Key Features
