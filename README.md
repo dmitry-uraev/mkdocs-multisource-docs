@@ -17,7 +17,7 @@ The `mkdocs-multisource-docs` plugin is designed to automate the process of coll
    Install the plugin using pip:
 
     ```bash
-    pip install mkdocs_multisource_docs
+    pip install mkdocs-multisource-docs
     ```
 
 2. Add the plugin to your `mkdocs.yml`:
