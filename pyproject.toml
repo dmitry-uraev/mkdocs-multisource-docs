@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkdocs-multisource-docs"
+version = "0.1.0"
+description = "MkDocs plugin to aggregate documentation from multiple repositories."
+authors = [
+    { name = "Dmitry Uraev", email = "uraev.dima@yandex.ru" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Technical writers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mkdocs>=1.5.3",
+    "python-gitlab>=4.4.0",
+    "pydantic>=2.10.6"
+]
+
+[project.entry-points."mkdocs.plugins"]
+multisource-docs = "mkdocs_multisource_docs.plugin:MultiSourceCollect"

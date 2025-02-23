@@ -1,0 +1,20 @@
+{
+    "GIT_HOST": "<GITLAB_HOST>",
+    "GIT_READ_TOKEN": "<GITLAB_TOKEN>",
+    "DOCS_REPOSITORIES": [
+        {
+            "name": "<repository_name1>",
+            "repo_id": "<repository_id1>",
+            "branch": "<repository_branch1>"
+        },
+        {
+            "name": "<repository_nameN>",
+            "repo_id": "<repository_idN>",
+            "branch": "<repository_branchN>"
+        }
+    ],
+    "EXCLUDE_IMAGES": [
+        "<excluded_filename1>.png",
+        "<excluded_filenameN>.png"
+    ]
+}
