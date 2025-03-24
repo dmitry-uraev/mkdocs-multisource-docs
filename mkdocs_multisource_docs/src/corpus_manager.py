@@ -2,19 +2,18 @@
 Functionality to process documentation archives
 """
 
+import logging
 import re
 import shutil
-import logging
 import zipfile
-
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, DocRepository, get_application_config
-from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH, BUILD_FOLDER_PATH
-from mkdocs_multisource_docs.src.utils import setup_logger
+from mkdocs_multisource_docs.src.config import (AppConfig, DocRepository,
+                                                get_application_config)
+from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
+                                                   TMP_FOLDER_PATH)
 
-
-logger = setup_logger(name=__name__, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class CorpusManager:
@@ -87,7 +86,6 @@ def extract_archives_in_folder(folder_path: Path) -> list:
 
 
 if __name__ == '__main__':
-
     from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
 
     corpus_manager = CorpusManager(

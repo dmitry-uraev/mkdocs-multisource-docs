@@ -2,16 +2,15 @@
 Service functions
 """
 
-import os
-import time
 import logging
-import subprocess
+import os
 import shutil
-
-from subprocess import CalledProcessError
+import subprocess
+import time
+from argparse import ArgumentParser, Namespace
 from functools import wraps
 from pathlib import Path
-from argparse import ArgumentParser, Namespace
+from subprocess import CalledProcessError
 
 from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH
 
@@ -38,27 +37,6 @@ def timeit(func):
                      func.__name__, f'{total_time:.4f}', func.__name__, args, kwargs)
         return result
     return timeit_wrapper
-
-
-def setup_logger(name: str = __name__, level=logging.DEBUG):
-    """Set up the logging configuration.
-
-    This function configures the logging settings for the application, including
-    the log format and logging level.
-
-    Args:
-        name (str): The name of the logger (default is the module name).
-        level (int): The logging level (default is logging.DEBUG).
-
-    Returns:
-        Logger: A configured logger instance.
-    """
-    logging.basicConfig(
-        format='%(asctime)s %(levelname)-8s %(message)s',
-        level=level,
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
-    return logging.getLogger(name)
 
 
 def setup_javadocs(path_to_java_project: Path):

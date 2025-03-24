@@ -4,12 +4,12 @@
     "DOCS_REPOSITORIES": [
         {
             "name": "<repository_name1>",
-            "repo_id": "<repository_id1>",
+            "repo_id": 0,
             "branch": "<repository_branch1>"
         },
         {
             "name": "<repository_nameN>",
-            "repo_id": "<repository_idN>",
+            "repo_id": 1,
             "branch": "<repository_branchN>"
         }
     ],

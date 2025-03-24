@@ -3,18 +3,16 @@ Entrypoint module for application
 """
 
 import logging
-
 from pathlib import Path
 
 from mkdocs_multisource_docs.src.config import get_application_config
-from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH, BUILD_FOLDER_PATH
-from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
+from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
+                                                   TMP_FOLDER_PATH)
 from mkdocs_multisource_docs.src.corpus_manager import CorpusManager
+from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
 from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
-from mkdocs_multisource_docs.src.utils import setup_logger
 
-
-logger = setup_logger(name=__name__, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 def main(app_cfg: str | Path) -> None:
