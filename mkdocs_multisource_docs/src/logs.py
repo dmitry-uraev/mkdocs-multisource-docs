@@ -47,4 +47,4 @@ def setup_root_logger(
     logging.basicConfig(level=level, handlers=handlers)
 
     # Silence noisy libraries
-    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    # logging.getLogger("<libname>").setLevel(logging.WARNING)

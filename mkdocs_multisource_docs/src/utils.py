@@ -14,6 +14,8 @@ from subprocess import CalledProcessError
 
 from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH
 
+logger = logging.getLogger(__name__)
+
 
 def timeit(func):
     """Decorator that measures the execution time of a function.
@@ -33,7 +35,7 @@ def timeit(func):
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         total_time = end_time - start_time
-        logging.info('Function %s Took %s seconds with arguments %s%s %s',
+        logger.info('Function %s Took %s seconds with arguments %s%s %s',
                      func.__name__, f'{total_time:.4f}', func.__name__, args, kwargs)
         return result
     return timeit_wrapper
@@ -43,10 +45,7 @@ def setup_javadocs(path_to_java_project: Path):
     """
     New feature: jenerate javadoc for repository
     """
-
-    logger = setup_logger(name=__name__, level=logging.DEBUG)
     logger.info('Building API documentation with Maven and Javadoc.')
-
     cwd = os.getcwd()
     os.chdir(path_to_java_project)
 
