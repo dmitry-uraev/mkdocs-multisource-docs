@@ -1,0 +1,22 @@
+{
+    "GIT_HOST": "https://gitlab.example.com",
+    "GIT_READ_TOKEN": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "DOCS_REPOSITORIES": [
+        {
+            "name": "my-repo-1",
+            "repo_id": 12345,
+            "branch": "main",
+            "javadoc": true
+        },
+        {
+            "name": "my-repo-2",
+            "repo_id": 67890,
+            "branch": "dev"
+        }
+    ],
+    "EXCLUDE_IMAGES": [
+        "logo.png",
+        "example.png"
+    ],
+    "GENERATE_INDEX": false
+}

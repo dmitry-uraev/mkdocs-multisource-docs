@@ -20,6 +20,7 @@ class DocRepository(BaseModel):
     name: str
     repo_id: int
     branch: str
+    javadoc: bool = False  # by default no javadoc generation for repository
 
 
 class AppConfig(BaseModel):
