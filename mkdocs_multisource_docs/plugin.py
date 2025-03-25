@@ -80,6 +80,6 @@ class MultiSourceCollect(BasePlugin):
             shutil.copytree(
                 JAVADOC_FOLDER_PATH,
                 javadoc_dest,
-                dirs_exist_ok=True  # Перезаписываем существующие файлы
+                dirs_exist_ok=True
             )
             shutil.rmtree(JAVADOC_FOLDER_PATH)

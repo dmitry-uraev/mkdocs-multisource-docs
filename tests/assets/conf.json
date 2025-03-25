@@ -6,7 +6,7 @@
             "name": "my-repo-1",
             "repo_id": 12345,
             "branch": "main",
-            "javadoc": true
+            "javadoc": false
         },
         {
             "name": "my-repo-2",
