@@ -3,19 +3,17 @@ Useful functions to work with GitLab repositories using python-gitlab
 """
 
 import logging
-
 from pathlib import Path
 from typing import Any
 
 from gitlab import Gitlab
 from gitlab.v4.objects import Project
 
+from mkdocs_multisource_docs.src.config import (AppConfig, DocRepository,
+                                                get_application_config)
 from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH
-from mkdocs_multisource_docs.src.config import AppConfig, get_application_config
-from mkdocs_multisource_docs.src.utils import setup_logger
 
-
-logger = setup_logger(name=__name__, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class GitLabManager:
@@ -33,6 +31,10 @@ class GitLabManager:
 
         self.__docs_list = [doc_repo.name for doc_repo in self.__config.DOCS_REPOSITORIES]
         self.__docs_ids = [doc_repo.repo_id for doc_repo in self.__config.DOCS_REPOSITORIES]
+
+        self.__docs_map: dict[str, DocRepository] = {
+            doc_repo.name: doc_repo for doc_repo in self.__config.DOCS_REPOSITORIES}
+
 
     def __initialize_gitlab_manager(self) -> Gitlab:
         """
@@ -67,9 +69,8 @@ class GitLabManager:
             self._download_gitlab_repository(
                repository=repo, download_path=download_path, name=f'export_{repo.name}.zip')
 
-    @staticmethod
     def _download_gitlab_repository(
-        repository: Project, download_path: Path, name: str = 'export.zip') -> None:
+            self, repository: Project, download_path: Path, name: str = 'export.zip') -> None:
         """
         Download repository as zip archive
         :param repository: Project object instance
@@ -84,11 +85,15 @@ class GitLabManager:
             return
 
         with open(file=download_path, mode='wb') as file:
-            repository.repository_archive(format='zip', streamed=True, action=file.write)
+            branch_name = self.__docs_map.get(repository.name)
+            match branch_name:
+                case None: repository.repository_archive(
+                    format='zip', streamed=True, action=file.write)
+                case _: repository.repository_archive(sha=branch_name.branch,
+                    format='zip', streamed=True, action=file.write)
 
 
 if __name__ == '__main__':
-
     from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
     git_manager = GitLabManager(application_config=get_application_config(TEST_APPLICATION_CONF))
     repos = git_manager.get_gitlab_repositories()

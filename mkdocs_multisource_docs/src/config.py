@@ -4,15 +4,12 @@ Application configuration
 
 import json
 import logging
-
-from pprint import pprint
 from pathlib import Path
+from pprint import pprint
+
 from pydantic import BaseModel
 
-from mkdocs_multisource_docs.src.utils import setup_logger
-
-
-logger = setup_logger(name=__name__, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class DocRepository(BaseModel):
@@ -42,7 +39,7 @@ def get_application_config(config_path: Path) -> AppConfig:
     :param config_path: path to configuration file
     :return: AppConfig object with all fields filled
     """
-    logger.info('[INFO] Getting application configuration file %s', config_path)
+    logger.info('Getting application configuration file %s', config_path)
     with open(file=config_path, mode='r', encoding='utf-8') as file:
         return AppConfig(**json.load(fp=file))
 

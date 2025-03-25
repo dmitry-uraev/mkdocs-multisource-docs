@@ -5,12 +5,11 @@ import logging
 import re
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, get_application_config
+from mkdocs_multisource_docs.src.config import (AppConfig,
+                                                get_application_config)
 from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
-from mkdocs_multisource_docs.src.utils import setup_logger
 
-
-logger = setup_logger(name=__name__, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class MarkdownProcessing:

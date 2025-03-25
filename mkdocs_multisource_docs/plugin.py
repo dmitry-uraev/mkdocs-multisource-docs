@@ -5,15 +5,16 @@ Plugin entrypoint
 import json
 import os
 import shutil
-
 from pathlib import Path
 
-from mkdocs.plugins import BasePlugin
 from mkdocs.config import config_options
+from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import File
 
-from mkdocs_multisource_docs.src.main import main
 from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
+from mkdocs_multisource_docs.src.logs import setup_root_logger
+from mkdocs_multisource_docs.src.main import main
+
 
 class MultiSourceCollect(BasePlugin):
     """
@@ -22,6 +23,8 @@ class MultiSourceCollect(BasePlugin):
     config_scheme = [
         ('multisource_config', config_options.Type(str, default=''))
     ]
+
+    setup_root_logger()
 
     def on_config(self, config,):
         """
