@@ -39,7 +39,8 @@ class MarkdownProcessing:
         self.generate_doc_for_unreferenced_images(images=images)
 
         # (3) add master index
-        self._add_master_index()
+        if self._config.GENERATE_INDEX:
+            self._add_master_index()
 
     def _rename_docs_folders(self):
         """
@@ -125,7 +126,7 @@ class MarkdownProcessing:
             result.extend([path for path in (BUILD_FOLDER_PATH / doc_name).rglob('*.png')
                            if path.name not in text and \
                             path.name not in self._config.EXCLUDE_IMAGES])
-        logger.info(msg=f'Collected the following images withoud documentation {result}')
+        logger.debug(msg=f'Collected the following images withoud documentation {result}')
         return result
 
 
