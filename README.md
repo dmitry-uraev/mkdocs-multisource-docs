@@ -10,7 +10,7 @@ The `mkdocs-multisource-docs` plugin is designed to automate the process of coll
 
 - **Multi-repository documentation collection**: automatically fetch and merge documentation from multiple GitLab repositories.
 - **Undocumented image documentation generation**: automatically generate documentation for images that lack descriptions.
-- **Seamless integration**: easily integrate with MkDocs to enhance your documentation workflow.
+- **JavaDoc generation**: Automatically generate and include JavaDoc for Java projects.
 
 ---
 
@@ -94,7 +94,6 @@ Example **application.json**
 The following features are currently in development and will be available in future releases:
 
 - **Multiple repository tokens**: Support for specifying different access tokens for different repositories.
-- **JavaDoc generation**: Automatically generate and include JavaDoc for Java projects.
 - **GitHub support**: Extend the plugin to support fetching documentation from GitHub repositories.
 - **Enhanced image handling**: Improved support for handling and documenting images.
 
