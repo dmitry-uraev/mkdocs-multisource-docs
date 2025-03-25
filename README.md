@@ -42,23 +42,24 @@ The `mkdocs-multisource-docs` plugin is designed to automate the process of coll
 
 The `application.json` file is used to configure the plugin. Below is a table describing all the required parameters:
 
-| Parameter         | Description                                                         | Example Value                |
-|-------------------|---------------------------------------------------------------------|------------------------------|
-| GIT_HOST          | The GitLab host URL.                                                | "https://gitlab.example.com" |
-| GIT_READ_TOKEN    | A GitLab access token with read permissions for the repositories.   | "glpat-xxxxxxxxxxxxxxxxxxxx" |
-| DOCS_REPOSITORIES | A list of repositories to fetch documentation from.                 | See below for structure      |
-| EXCLUDE_IMAGES    | (Optional) A list of image filenames to exclude from documentation. | ["image1.png", "image2.png"] |
-| GENERATE_INDEX    | Set this parameter to `true` if you don’t have an entrypoint `index.md` file for your repositories. The plugin will automatically generate one for documentation. If you use your own `index.md` file, leave it empty or set it to `false`. | Defaults to `false` |
+| Parameter         | Description                                                                                                                                                                                                                                 | Example Value                |
+|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
+| GIT_HOST          | The GitLab host URL.                                                                                                                                                                                                                        | "https://gitlab.example.com" |
+| GIT_READ_TOKEN    | A GitLab access token with read permissions for the repositories.                                                                                                                                                                           | "glpat-xxxxxxxxxxxxxxxxxxxx" |
+| DOCS_REPOSITORIES | A list of repositories to fetch documentation from.                                                                                                                                                                                         | See below for structure      |
+| EXCLUDE_IMAGES    | (Optional) A list of image filenames to exclude from documentation.                                                                                                                                                                         | ["image1.png", "image2.png"] |
+| GENERATE_INDEX    | Set this parameter to `true` if you don’t have an entrypoint `index.md` file for your repositories. The plugin will automatically generate one for documentation. If you use your own `index.md` file, leave it empty or set it to `false`. | Defaults to `false`          |
 
 #### DOCS_REPOSITORIES Structure
 
 The `DOCS_REPOSITORIES` parameter is a list of objects, each representing a repository. Each object has the following fields:
 
-| Field   | Description                                               | Example Value |
-|---------|-----------------------------------------------------------|---------------|
-| name    | The name of the repository.                               | "my-repo"     |
-| repo_id | The ID of the repository.                                 | 12345         |
-| branch  | The branch of the repository to fetch documentation from. | "main"        |
+| Field   | Description                                                                                                                                                                                                                                                                                                                         | Example Value       |
+|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| name    | The name of the repository.                                                                                                                                                                                                                                                                                                         | "my-repo"           |
+| repo_id | The ID of the repository.                                                                                                                                                                                                                                                                                                           | 12345               |
+| branch  | The branch of the repository to fetch documentation from.                                                                                                                                                                                                                                                                           | "main"              |
+| javadoc | Add this parameter to repository definition if you need to build Javadoc for it. **Note**: there should be access to Maven plugin (`mvn` command) in the environment to build document. Javadoc build increases documentation build time. Javadoc documentation will be available for linking as `/apidocs/<repo-name>/index.html`. | Defaults to `false` |
 
 Example **application.json**
 
@@ -112,3 +113,4 @@ For more information, issues, or contributions, please visit the GitHub reposito
 Version *0.1.2*
 
 - `GENERATE_INDEX` parameter specifies if plugin should automatically generate index.md file for documentation
+- For each repository in `DOCS_REPOSITORIES` the `javadoc` parameter can now be specified to generate Javadoc alongside other docs.

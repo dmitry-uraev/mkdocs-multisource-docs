@@ -11,7 +11,8 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import File
 
-from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
+from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
+                                                   JAVADOC_FOLDER_PATH)
 from mkdocs_multisource_docs.src.logs import setup_root_logger
 from mkdocs_multisource_docs.src.main import main
 
@@ -56,7 +57,7 @@ class MultiSourceCollect(BasePlugin):
         for root, _, filenames in os.walk(BUILD_FOLDER_PATH):
             for filename in filenames:
                 file_path = Path(root) / filename
-                if file_path.suffix.lower() in allowed_extensions:
+                if file_path.suffix.lower() in allowed_extensions or file_path.name == '.pages':
                     relative_path = file_path.relative_to(BUILD_FOLDER_PATH)
                     files.append(File(
                         path=str(relative_path),
@@ -72,3 +73,13 @@ class MultiSourceCollect(BasePlugin):
         """
         if os.path.exists(BUILD_FOLDER_PATH):
             shutil.rmtree(BUILD_FOLDER_PATH)
+
+        # Javadocs
+        if JAVADOC_FOLDER_PATH.exists():
+            javadoc_dest = Path(config['site_dir']) / 'apidocs'
+            shutil.copytree(
+                JAVADOC_FOLDER_PATH,
+                javadoc_dest,
+                dirs_exist_ok=True
+            )
+            shutil.rmtree(JAVADOC_FOLDER_PATH)

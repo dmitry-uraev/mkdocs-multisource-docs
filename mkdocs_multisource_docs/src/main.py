@@ -5,6 +5,7 @@ Entrypoint module for application
 import logging
 from pathlib import Path
 
+from mkdocs_multisource_docs.src.builders.javadoc import build_javadocs
 from mkdocs_multisource_docs.src.config import get_application_config
 from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
                                                    TMP_FOLDER_PATH)
@@ -36,6 +37,9 @@ def main(app_cfg: str | Path) -> None:
     # md_utils.py
     md_manager = MarkdownProcessing(application_config=config, docs_folder=BUILD_FOLDER_PATH)
     md_manager.process_doc_folder()
+
+    # Javadocs
+    build_javadocs(app_conf=config)
 
 
 if __name__ == '__main__':
