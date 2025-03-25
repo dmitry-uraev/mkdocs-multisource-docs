@@ -31,6 +31,7 @@ class AppConfig(BaseModel):
     GIT_READ_TOKEN: str
     DOCS_REPOSITORIES: list[DocRepository]
     EXCLUDE_IMAGES: list[str]
+    GENERATE_INDEX: bool = False  # by default do not generate index.md file for docs
 
 
 def get_application_config(config_path: Path) -> AppConfig:

@@ -2,9 +2,7 @@
 name = "mkdocs-multisource-docs"
 version = "0.1.1"
 description = "A MkDocs plugin that is designed to automate the process of collecting documentation from multiple GitLab repositories and integrating it into the documentation of the current repository."
-authors = [
-    { name = "Dmitry Uraev", email = "uraev.dima@yandex.ru" },
-]
+authors = [{ name = "Dmitry Uraev", email = "uraev.dima@yandex.ru" }]
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
@@ -21,11 +19,7 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
     "Topic :: Utilities",
 ]
-dependencies = [
-    "mkdocs>=1.5.3",
-    "python-gitlab>=4.4.0",
-    "pydantic>=2.10.6"
-]
+dependencies = ["mkdocs>=1.5.3", "python-gitlab>=4.4.0", "pydantic>=2.10.6"]
 
 [project.entry-points."mkdocs.plugins"]
 multisource-docs = "mkdocs_multisource_docs.plugin:MultiSourceCollect"

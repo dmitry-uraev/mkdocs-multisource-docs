@@ -48,6 +48,7 @@ The `application.json` file is used to configure the plugin. Below is a table de
 | GIT_READ_TOKEN    | A GitLab access token with read permissions for the repositories.   | "glpat-xxxxxxxxxxxxxxxxxxxx" |
 | DOCS_REPOSITORIES | A list of repositories to fetch documentation from.                 | See below for structure      |
 | EXCLUDE_IMAGES    | (Optional) A list of image filenames to exclude from documentation. | ["image1.png", "image2.png"] |
+| GENERATE_INDEX    | Set this parameter to `true` if you don’t have an entrypoint `index.md` file for your repositories. The plugin will automatically generate one for documentation. If you use your own `index.md` file, leave it empty or set it to `false`. | Defaults to `false` |
 
 #### DOCS_REPOSITORIES Structure
 
@@ -59,7 +60,7 @@ The `DOCS_REPOSITORIES` parameter is a list of objects, each representing a repo
 | repo_id | The ID of the repository.                                 | 12345         |
 | branch  | The branch of the repository to fetch documentation from. | "main"        |
 
-**Example application.json**
+Example **application.json**
 
 ```json
 {
@@ -80,7 +81,8 @@ The `DOCS_REPOSITORIES` parameter is a list of objects, each representing a repo
     "EXCLUDE_IMAGES": [
         "logo.png",
         "example.png"
-    ]
+    ],
+    "GENERATE_INDEX": false
 }
 ```
 
@@ -104,3 +106,9 @@ The `mkdocs-multisource-docs` plugin is open-source and can be used freely in an
 ---
 
 For more information, issues, or contributions, please visit the GitHub repository.
+
+---
+
+Version *0.1.2*
+
+- `GENERATE_INDEX` parameter specifies if plugin should automatically generate index.md file for documentation
