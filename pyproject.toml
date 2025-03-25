@@ -1,6 +1,6 @@
 [project]
 name = "mkdocs-multisource-docs"
-version = "0.1.1"
+version = "0.1.2"
 description = "A MkDocs plugin that is designed to automate the process of collecting documentation from multiple GitLab repositories and integrating it into the documentation of the current repository."
 authors = [{ name = "Dmitry Uraev", email = "uraev.dima@yandex.ru" }]
 readme = "README.md"
