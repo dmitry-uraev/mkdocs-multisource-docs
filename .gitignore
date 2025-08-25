@@ -5,3 +5,8 @@ __pycache__
 dist/
 build/
 poetry.lock
+
+# tmp extension folders
+mt_source_tmp
+mt_source_jvd
+mt_source_build

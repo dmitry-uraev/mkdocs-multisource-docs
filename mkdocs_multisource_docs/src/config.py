@@ -6,6 +6,7 @@ import json
 import logging
 from pathlib import Path
 from pprint import pprint
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -20,8 +21,11 @@ class DocRepository(BaseModel):
     name: str
     repo_id: int
     branch: str
-    javadoc: bool = False  # by default no javadoc generation for repository
 
+    # javadoc
+    javadoc: bool = False # by default no javadoc generation for repository
+    javadoc_command: Optional[str] = None
+    javadoc_relative_dir: Optional[str] = None
 
 class AppConfig(BaseModel):
     """
