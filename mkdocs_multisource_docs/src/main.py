@@ -13,6 +13,7 @@ from mkdocs_multisource_docs.src.corpus_manager import CorpusManager
 from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
 from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
 
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -27,12 +28,11 @@ def main(app_cfg: str | Path) -> None:
     # gitlab_utils.py
     gitlab = GitLabManager(application_config=config)
     doc_repositories = gitlab.get_gitlab_repositories()
-    gitlab.download_gitlab_repositories(
-        repositories=doc_repositories, download_path=TMP_FOLDER_PATH)
+    gitlab.clone_gitlab_repositories(repositories=doc_repositories, clone_path=BUILD_FOLDER_PATH)
 
-    # corpus_manager.py
-    corpus = CorpusManager(artifacts_path=TMP_FOLDER_PATH, application_config=config)
-    corpus.extract_documentation_from_artifacts()
+    # DEPRECATED. corpus_manager.py
+    # corpus = CorpusManager(artifacts_path=TMP_FOLDER_PATH, application_config=config)
+    # corpus.extract_documentation_from_artifacts()
 
     # md_utils.py
     md_manager = MarkdownProcessing(application_config=config, docs_folder=BUILD_FOLDER_PATH)

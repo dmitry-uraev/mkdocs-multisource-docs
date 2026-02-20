@@ -1,5 +1,5 @@
 """
-Functionality to process documentation archives
+DEPRECATED. Functionality to process documentation archives
 """
 
 import logging

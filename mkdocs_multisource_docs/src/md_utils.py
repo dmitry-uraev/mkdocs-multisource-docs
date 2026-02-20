@@ -30,9 +30,6 @@ class MarkdownProcessing:
         Main processing flow
         """
 
-        # (0) rename .docs to docs paths
-        self._rename_docs_folders()
-
         # (1) get images without references
         images = self.get_images_without_references()
         # (2) generate docs for unreferenced images
@@ -41,18 +38,6 @@ class MarkdownProcessing:
         # (3) add master index
         if self._config.GENERATE_INDEX:
             self._add_master_index()
-
-    def _rename_docs_folders(self):
-        """
-        Rename .docs folders into docs, remove .docs paths
-        """
-        for doc_name in self.__docs_names_map.keys():
-            for path in (BUILD_FOLDER_PATH / doc_name).rglob('*'):
-                if path.is_dir() and path.name == '.docs':
-                    logger.info(msg=f'Found .docs directory in {path}. Renaming to docs')
-                    newname = Path(str(path).replace(path.name, 'docs'))
-                    newname.parent.mkdir(parents=True, exist_ok=True)
-                    path.rename(newname)
 
     def _add_master_index(self) -> None:
         """

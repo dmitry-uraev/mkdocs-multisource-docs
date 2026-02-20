@@ -116,6 +116,7 @@ For more information, issues, or contributions, please visit the GitHub reposito
 
 Version *0.1.3*
 
+- Clonning Git repositories instead of downloading, previous behavior preserved.
 - Javadoc additional configuration parameters added into the configuration file: `javadoc_command`, `javadoc_relative_dir`.
 
 Version *0.1.2*
