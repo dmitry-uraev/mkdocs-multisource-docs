@@ -57,14 +57,14 @@ class MultiSourceCollect(BasePlugin):
         for root, _, filenames in os.walk(BUILD_FOLDER_PATH):
             for filename in filenames:
                 file_path = Path(root) / filename
-                if file_path.suffix.lower() in allowed_extensions or file_path.name == '.pages':
-                    relative_path = file_path.relative_to(BUILD_FOLDER_PATH)
-                    files.append(File(
-                        path=str(relative_path),
-                        src_dir=str(BUILD_FOLDER_PATH),
-                        dest_dir=config['site_dir'],
-                        use_directory_urls=config['use_directory_urls']
-                    ))
+                #if file_path.suffix.lower() in allowed_extensions or file_path.name == '.pages':
+                relative_path = file_path.relative_to(BUILD_FOLDER_PATH)
+                files.append(File(
+                    path=str(relative_path),
+                    src_dir=str(BUILD_FOLDER_PATH),
+                    dest_dir=config['site_dir'],
+                    use_directory_urls=config['use_directory_urls']
+                ))
         return files
 
     def on_post_build(self, *, config):
