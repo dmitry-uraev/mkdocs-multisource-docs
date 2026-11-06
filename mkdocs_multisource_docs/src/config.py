@@ -21,6 +21,7 @@ class DocRepository(BaseModel):
     name: str
     repo_id: int
     branch: str
+    docs_root: str = "."
 
     # javadoc
     javadoc: bool = False # by default no javadoc generation for repository

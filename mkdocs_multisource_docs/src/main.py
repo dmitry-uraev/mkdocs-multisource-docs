@@ -12,6 +12,7 @@ from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
 from mkdocs_multisource_docs.src.corpus_manager import CorpusManager
 from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
 from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
+from mkdocs_multisource_docs.src.manifest import MANIFEST_FILENAME, DocumentManifest
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -37,6 +38,12 @@ def main(app_cfg: str | Path) -> None:
     # md_utils.py
     md_manager = MarkdownProcessing(application_config=config, docs_folder=BUILD_FOLDER_PATH)
     md_manager.process_doc_folder()
+
+    manifest = DocumentManifest.build(
+        build_folder=BUILD_FOLDER_PATH,
+        application_config=config,
+    )
+    manifest.write(BUILD_FOLDER_PATH / MANIFEST_FILENAME)
 
     # Javadocs
     build_javadocs(app_conf=config)

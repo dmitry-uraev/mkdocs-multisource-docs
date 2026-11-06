@@ -13,6 +13,7 @@ from mkdocs.structure.files import File
 
 from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
                                                    JAVADOC_FOLDER_PATH)
+from mkdocs_multisource_docs.src.manifest import MANIFEST_FILENAME
 from mkdocs_multisource_docs.src.logs import setup_root_logger
 from mkdocs_multisource_docs.src.main import main
 
@@ -57,6 +58,8 @@ class MultiSourceCollect(BasePlugin):
         for root, _, filenames in os.walk(BUILD_FOLDER_PATH):
             for filename in filenames:
                 file_path = Path(root) / filename
+                if file_path.name == MANIFEST_FILENAME:
+                    continue
                 #if file_path.suffix.lower() in allowed_extensions or file_path.name == '.pages':
                 relative_path = file_path.relative_to(BUILD_FOLDER_PATH)
                 files.append(File(
