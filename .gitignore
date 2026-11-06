@@ -4,8 +4,6 @@ __pycache__
 .DS_Store
 dist/
 build/
-poetry.lock
-
 # tmp extension folders
 mt_source_tmp
 mt_source_jvd

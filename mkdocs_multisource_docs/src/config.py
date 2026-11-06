@@ -6,7 +6,6 @@ import json
 import logging
 from pathlib import Path
 from pprint import pprint
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -21,11 +20,13 @@ class DocRepository(BaseModel):
     name: str
     repo_id: int
     branch: str
+    docs_root: str = "."
 
     # javadoc
-    javadoc: bool = False # by default no javadoc generation for repository
-    javadoc_command: Optional[str] = None
-    javadoc_relative_dir: Optional[str] = None
+    javadoc: bool = False  # by default no javadoc generation for repository
+    javadoc_command: str | None = None
+    javadoc_relative_dir: str | None = None
+
 
 class AppConfig(BaseModel):
     """
@@ -45,12 +46,13 @@ def get_application_config(config_path: Path) -> AppConfig:
     :param config_path: path to configuration file
     :return: AppConfig object with all fields filled
     """
-    logger.info('Getting application configuration file %s', config_path)
-    with open(file=config_path, mode='r', encoding='utf-8') as file:
+    logger.info("Getting application configuration file %s", config_path)
+    with open(file=config_path, encoding="utf-8") as file:
         return AppConfig(**json.load(fp=file))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
+
     app_config = get_application_config(config_path=TEST_APPLICATION_CONF)
     pprint(app_config)

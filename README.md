@@ -50,6 +50,9 @@ The `application.json` file is used to configure the plugin. Below is a table de
 | EXCLUDE_IMAGES    | (Optional) A list of image filenames to exclude from documentation.                                                                                                                                                                         | ["image1.png", "image2.png"] |
 | GENERATE_INDEX    | Set this parameter to `true` if you don’t have an entrypoint `index.md` file for your repositories. The plugin will automatically generate one for documentation. If you use your own `index.md` file, leave it empty or set it to `false`. | Defaults to `false`          |
 
+Each repository may optionally define `docs_root`, the directory containing
+its documentation. It defaults to `.` (the repository root).
+
 #### DOCS_REPOSITORIES Structure
 
 The `DOCS_REPOSITORIES` parameter is a list of objects, each representing a repository. Each object has the following fields:
@@ -74,6 +77,7 @@ Example **application.json**
             "name": "my-repo-1",
             "repo_id": 12345,
             "branch": "main",
+            "docs_root": "docs",
             "javadoc": true,
             "javadoc_command": "mvn clean install javadoc:aggregate",
             "javadoc_relative_dir": "/sources/files/folder"
@@ -102,6 +106,33 @@ The following features are currently in development and will be available in fut
 - **GitHub support**: Extend the plugin to support fetching documentation from GitHub repositories.
 - **Enhanced image handling**: Improved support for handling and documenting images.
 
+### Cross-repository links: implementation plan
+
+The first implementation step is complete: after repositories are cloned, the
+plugin creates `mt_source_build/.multisource-manifest.json`. For example,
+`example-repo:docs/HOWTO/naming_metrics.md` is mapped to
+`/example-repo/docs/HOWTO/naming_metrics.html`. The manifest is an intermediate
+build artifact and is not copied into the final site; it is an implementation
+detail for the future cross-repository link resolver.
+
+The remaining work is planned in the following order:
+
+1. Resolve the plugin configuration path relative to `mkdocs.yml`, and add
+   explicit configuration for link checking (`strict`, `warning`, `off`).
+2. Parse the optional `multisource-ref="repository:path[#anchor]"` attribute
+   on ordinary Markdown links. Replace only `href`, preserve an anchor, and
+   remove the service attribute from generated HTML. Links without the
+   attribute must remain unchanged, including the GitLab URL fallback.
+3. Validate repository and document existence against the manifest, reporting
+   the source Markdown file and line number. Apply the configured strict,
+   warning, or off behavior.
+4. Normalize `.docs/...` paths to `docs/...` in the collected site, preserve
+   ordinary relative links inside the current repository, and make navigation
+   independent of incidental `.pages` files.
+5. Expand copied resource types to include SVG and PDF, then add unit and
+   integration coverage for relative links, cross-repository links, anchors,
+   missing repositories/files, and disabled-plugin fallback behavior.
+
 And more: Additional features to improve flexibility and usability.
 
 ## License
@@ -116,6 +147,7 @@ For more information, issues, or contributions, please visit the GitHub reposito
 
 Version *0.1.3*
 
+- Clonning Git repositories instead of downloading, previous behavior preserved.
 - Javadoc additional configuration parameters added into the configuration file: `javadoc_command`, `javadoc_relative_dir`.
 
 Version *0.1.2*
