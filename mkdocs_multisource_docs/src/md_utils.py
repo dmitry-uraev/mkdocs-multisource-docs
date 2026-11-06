@@ -96,7 +96,7 @@ class MarkdownProcessing:
                 f"- [{image_path.name[:-4]}.md](.{relative_root / f'{image_path.name[:-4]}.md'})\n"
             )
             total_generated_references += image_reference_line_full
-            logger.debug(msg=f"Generated reference for image {image_path.name}. Done!")
+            logger.debug("Generated reference for image %s. Done!", image_path.name)
 
         full = "\n# Undocumented images"
         full += total_generated_references
@@ -120,7 +120,7 @@ class MarkdownProcessing:
                     if path.name not in text and path.name not in self._config.EXCLUDE_IMAGES
                 ]
             )
-        logger.debug(msg=f"Collected the following images withoud documentation {result}")
+        logger.debug("Collected the following images without documentation %s", result)
         return result
 
 

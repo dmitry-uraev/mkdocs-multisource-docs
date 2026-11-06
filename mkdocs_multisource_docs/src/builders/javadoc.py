@@ -47,13 +47,13 @@ def build_javadoc(
         default_command = "mvn javadoc:aggregate -Ddoclint=none -quiet"
         call_args = [javadoc_command if javadoc_command else default_command]
         subprocess.run(" ".join(call_args), shell=True, check=True)
-    except CalledProcessError as e:
+    except CalledProcessError:
         os.chdir(cwd)
-        logger.error(f"Javadoc generation failed with error: {e}")
+        logger.exception("Javadoc generation failed")
         return None
-    except Exception as e:
+    except Exception:
         os.chdir(cwd)
-        logger.error(f"Unexpected error during javadoc generation: {e}")
+        logger.exception("Unexpected error during javadoc generation")
         return None
 
     os.chdir(cwd)

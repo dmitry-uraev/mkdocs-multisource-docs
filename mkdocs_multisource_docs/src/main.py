@@ -2,7 +2,6 @@
 Entrypoint module for application
 """
 
-import logging
 from pathlib import Path
 
 from mkdocs_multisource_docs.src.builders.javadoc import build_javadocs
@@ -11,9 +10,6 @@ from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
 from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
 from mkdocs_multisource_docs.src.manifest import MANIFEST_FILENAME, DocumentManifest
 from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 
 def main(app_cfg: str | Path) -> None:
