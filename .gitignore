@@ -8,3 +8,8 @@ build/
 mt_source_tmp
 mt_source_jvd
 mt_source_build
+site/
+# quality
+.mypy_cache
+.pytest_cache
+.ruff_cache

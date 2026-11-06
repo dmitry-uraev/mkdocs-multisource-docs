@@ -7,9 +7,9 @@ from pathlib import Path
 from mkdocs_multisource_docs.src.builders.javadoc import build_javadocs
 from mkdocs_multisource_docs.src.config import get_application_config
 from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
-from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
 from mkdocs_multisource_docs.src.manifest import MANIFEST_FILENAME, DocumentManifest
 from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
+from mkdocs_multisource_docs.src.repository_sources import create_repository_source
 
 
 def main(app_cfg: str | Path) -> None:
@@ -20,10 +20,16 @@ def main(app_cfg: str | Path) -> None:
     # config.py
     config = get_application_config(config_path=Path(app_cfg))
 
-    # gitlab_utils.py
-    gitlab = GitLabManager(application_config=config)
-    doc_repositories = gitlab.get_gitlab_repositories()
-    gitlab.clone_gitlab_repositories(repositories=doc_repositories, clone_path=BUILD_FOLDER_PATH)
+    # repository source
+    repository_source = create_repository_source(
+        application_config=config,
+        config_path=Path(app_cfg),
+    )
+    doc_repositories = repository_source.get_repositories()
+    repository_source.clone_repositories(
+        repositories=doc_repositories,
+        clone_path=BUILD_FOLDER_PATH,
+    )
 
     # DEPRECATED. corpus_manager.py
     # corpus = CorpusManager(artifacts_path=TMP_FOLDER_PATH, application_config=config)

@@ -6,6 +6,7 @@ import json
 import logging
 from pathlib import Path
 from pprint import pprint
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -33,8 +34,10 @@ class AppConfig(BaseModel):
     Application config DTO
     """
 
-    GIT_HOST: str
-    GIT_READ_TOKEN: str
+    SOURCE: Literal["gitlab", "local"] = "gitlab"
+    GIT_HOST: str = ""
+    GIT_READ_TOKEN: str = ""
+    LOCAL_SOURCE_PATH: str = "sources"
     DOCS_REPOSITORIES: list[DocRepository]
     EXCLUDE_IMAGES: list[str]
     GENERATE_INDEX: bool = False  # by default do not generate index.md file for docs

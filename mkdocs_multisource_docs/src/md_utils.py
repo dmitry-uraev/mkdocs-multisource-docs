@@ -57,6 +57,11 @@ class MarkdownProcessing:
         """
 
         logger.info("Generating documents for unreferenced .png images")
+        references_path = self._docs_folder / "references.md"
+        if not images:
+            references_path.unlink(missing_ok=True)
+            return
+
         total_generated_references = "\n\n"
         image_reference_pattern = r"!\[.*\]\(.*\.png\)"
 
@@ -100,7 +105,7 @@ class MarkdownProcessing:
 
         full = "\n# Undocumented images"
         full += total_generated_references
-        with open(file=self._docs_folder / "references.md", mode="w", encoding="utf-8") as index:
+        with open(file=references_path, mode="w", encoding="utf-8") as index:
             index.write(full)
 
     def get_images_without_references(self) -> list[Path]:
