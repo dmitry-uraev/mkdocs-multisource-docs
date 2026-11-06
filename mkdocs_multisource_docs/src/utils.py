@@ -29,10 +29,9 @@ def timeit(func):
         end_time = time.perf_counter()
         total_time = end_time - start_time
         logger.info(
-            "Function %s Took %s seconds with arguments %s%s %s",
+            "Function %s took %.4f seconds with arguments args=%s kwargs=%s",
             func.__name__,
-            f"{total_time:.4f}",
-            func.__name__,
+            total_time,
             args,
             kwargs,
         )

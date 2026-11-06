@@ -65,7 +65,7 @@ class GitLabManager:
         :param clone_path: destination path for cloning
         :return: None
         """
-        logger.info(f"Cloning gitlab repositories into {TMP_FOLDER_PATH}")
+        logger.info("Cloning GitLab repositories into %s", TMP_FOLDER_PATH)
         for repo in repositories:
             self._clone_gitlab_repository(repository=repo, clone_path=clone_path)
 
@@ -84,7 +84,7 @@ class GitLabManager:
 
         # remove if repo destination already exists
         if repo_destination.exists():
-            logger.info(f"Removing existing directory: {repo_destination}")
+            logger.info("Removing existing directory: %s", repo_destination)
             shutil.rmtree(repo_destination)
 
         # form repository url with authentication
@@ -117,13 +117,13 @@ class GitLabManager:
             str(repo_destination),
         ]
 
-        logger.info(f"Cloning repository {repository.name} from branch {branch_name}")
+        logger.info("Cloning repository %s from branch %s", repository.name, branch_name)
 
         try:
             result = subprocess.run(clone_cmd, capture_output=True, text=True, check=True)
-            logger.info(f"Successfully cloned {repository.name}: {result.stdout}")
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Failed to clone {repository.name}: {e.stderr}")
+            logger.info("Successfully cloned %s: %s", repository.name, result.stdout)
+        except subprocess.CalledProcessError as error:
+            logger.error("Failed to clone %s: %s", repository.name, error.stderr)
             raise
 
     def download_gitlab_repositories(
@@ -135,7 +135,7 @@ class GitLabManager:
         :param download_path: destination path is the same for all repositories
         :return: None
         """
-        logger.info(msg=f"Downloading gitlab repositories into {TMP_FOLDER_PATH}")
+        logger.info("Downloading GitLab repositories into %s", TMP_FOLDER_PATH)
         # map(lambda x: self._download_gitlab_repository(
         # x, download_path, name=f'export_{x.name}.zip'), repositories)
         for repo in repositories:
