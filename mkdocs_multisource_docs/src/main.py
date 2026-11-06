@@ -7,12 +7,10 @@ from pathlib import Path
 
 from mkdocs_multisource_docs.src.builders.javadoc import build_javadocs
 from mkdocs_multisource_docs.src.config import get_application_config
-from mkdocs_multisource_docs.src.constants import (BUILD_FOLDER_PATH,
-                                                   TMP_FOLDER_PATH)
-from mkdocs_multisource_docs.src.corpus_manager import CorpusManager
+from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
 from mkdocs_multisource_docs.src.gitlab_utils import GitLabManager
-from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
 from mkdocs_multisource_docs.src.manifest import MANIFEST_FILENAME, DocumentManifest
+from mkdocs_multisource_docs.src.md_utils import MarkdownProcessing
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -49,7 +47,7 @@ def main(app_cfg: str | Path) -> None:
     build_javadocs(app_conf=config)
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
+
     main(TEST_APPLICATION_CONF)

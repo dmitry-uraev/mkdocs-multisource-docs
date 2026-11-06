@@ -11,7 +11,7 @@ def setup_root_logger(
     level: int = logging.INFO,
     log_file: Path | None = None,
     fmt: str = "%(asctime)s [%(name)s] %(levelname)-8s %(message)s",
-    datefmt: str = "%Y-%m-%d %H:%M:%S"
+    datefmt: str = "%Y-%m-%d %H:%M:%S",
 ) -> None:
     """Configures the root logger for the entire project.
 
@@ -33,12 +33,12 @@ def setup_root_logger(
     console_handler.setFormatter(formatter)
 
     # Configure handlers
-    handlers = [console_handler]
+    handlers: list[logging.Handler] = [console_handler]
     if log_file:
         file_handler = RotatingFileHandler(
             log_file,
             maxBytes=10 * 1024 * 1024,  # 10 MB per file
-            backupCount=5               # Keep 5 backup copies
+            backupCount=5,  # Keep 5 backup copies
         )
         file_handler.setFormatter(formatter)
         handlers.append(file_handler)

@@ -5,21 +5,50 @@ description = "A MkDocs plugin that is designed to automate the process of colle
 authors = [{ name = "Dmitry Uraev", email = "uraev.dima@yandex.ru" }]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Documentation",
     "Topic :: Software Development :: Documentation",
     "Topic :: Utilities",
 ]
-dependencies = ["mkdocs>=1.5.3", "python-gitlab>=4.4.0", "pydantic>=2.10.6"]
+dependencies = [
+    "mkdocs>=1.6.1,<2.0",
+    "python-gitlab>=8.6,<9.0",
+    "pydantic>=2.14,<3.0",
+]
+
+[tool.poetry.group.quality.dependencies]
+pytest = ">=9.2,<10.0"
+pytest-cov = ">=7.1,<8.0"
+mypy = ">=2.4,<3.0"
+ruff = ">=0.17.4,<1.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = ">=4.7,<5.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.14"
+files = ["mkdocs_multisource_docs", "tests"]
+ignore_missing_imports = true
+check_untyped_defs = true
 
 [project.entry-points."mkdocs.plugins"]
 multisource-docs = "mkdocs_multisource_docs.plugin:MultiSourceCollect"

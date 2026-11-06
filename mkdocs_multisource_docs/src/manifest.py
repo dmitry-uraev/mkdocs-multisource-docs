@@ -1,10 +1,11 @@
 """Manifest of documentation files collected from source repositories."""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path, PurePosixPath
 
 from mkdocs_multisource_docs.src.config import AppConfig
-
 
 MANIFEST_FILENAME = ".multisource-manifest.json"
 
@@ -16,7 +17,7 @@ class DocumentManifest:
         self.documents = documents
 
     @classmethod
-    def build(cls, build_folder: Path, application_config: AppConfig) -> "DocumentManifest":
+    def build(cls, build_folder: Path, application_config: AppConfig) -> DocumentManifest:
         """Build a manifest from the cloned repositories in ``build_folder``.
 
         Source paths use the same syntax as ``multisource-ref``:
@@ -50,7 +51,7 @@ class DocumentManifest:
                 {"version": 1, "documents": dict(sorted(self.documents.items()))},
                 ensure_ascii=False,
                 indent=2,
-            ) + "\n",
+            )
+            + "\n",
             encoding="utf-8",
         )
-

@@ -18,12 +18,14 @@ class DocumentManifestTest(unittest.TestCase):
             config = AppConfig(
                 GIT_HOST="https://gitlab.example.com",
                 GIT_READ_TOKEN="token",
-                DOCS_REPOSITORIES=[DocRepository(
-                    name="example-repo",
-                    repo_id=1,
-                    branch="develop",
-                    docs_root="docs",
-                )],
+                DOCS_REPOSITORIES=[
+                    DocRepository(
+                        name="example-repo",
+                        repo_id=1,
+                        branch="develop",
+                        docs_root="docs",
+                    )
+                ],
                 EXCLUDE_IMAGES=[],
             )
 
@@ -31,8 +33,11 @@ class DocumentManifestTest(unittest.TestCase):
 
             self.assertEqual(
                 manifest.documents,
-                {"example-repo:docs/HOWTO/naming_metrics.md":
-                 "/example-repo/docs/HOWTO/naming_metrics.html"},
+                {
+                    "example-repo:docs/HOWTO/naming_metrics.md": (
+                        "/example-repo/docs/HOWTO/naming_metrics.html"
+                    )
+                },
             )
 
     def test_build_normalizes_hidden_docs_root(self):
@@ -45,12 +50,14 @@ class DocumentManifestTest(unittest.TestCase):
             config = AppConfig(
                 GIT_HOST="https://gitlab.example.com",
                 GIT_READ_TOKEN="token",
-                DOCS_REPOSITORIES=[DocRepository(
-                    name="example-repo",
-                    repo_id=1,
-                    branch="main",
-                    docs_root=".docs",
-                )],
+                DOCS_REPOSITORIES=[
+                    DocRepository(
+                        name="example-repo",
+                        repo_id=1,
+                        branch="main",
+                        docs_root=".docs",
+                    )
+                ],
                 EXCLUDE_IMAGES=[],
             )
 
