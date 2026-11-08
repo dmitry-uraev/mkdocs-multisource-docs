@@ -19,7 +19,7 @@ class MarkdownProcessing:
 
     def __init__(self, application_config: AppConfig, docs_folder: Path) -> None:
 
-        logger.info("Initializing MarkdownProcessing manager for directory %s", BUILD_FOLDER_PATH)
+        logger.debug("Initializing MarkdownProcessing manager for directory %s", BUILD_FOLDER_PATH)
         self._config = application_config
         self._docs_folder = docs_folder
 
@@ -56,17 +56,18 @@ class MarkdownProcessing:
         Generated documents for unreferenced images
         """
 
-        logger.info("Generating documents for unreferenced .png images")
         references_path = self._docs_folder / "references.md"
         if not images:
             references_path.unlink(missing_ok=True)
             return
 
+        logger.info("Generating documentation for %s unreferenced PNG images", len(images))
+
         total_generated_references = "\n\n"
         image_reference_pattern = r"!\[.*\]\(.*\.png\)"
 
         for image_path in images:
-            logger.info("Generating document for image %s", image_path.name)
+            logger.debug("Generating document for image %s", image_path.name)
             logger.debug("Image is found in %s", image_path.parent)
             logger.debug("Image upper level directory is %s", image_path.parent.parent)
             logger.debug(
@@ -82,7 +83,7 @@ class MarkdownProcessing:
             # [BUG] Make sure to include all png images even if they have the same name
             img_filename = image_path.parent.parent / f"{image_path.name[:-4]}.md"
             if img_filename.exists():
-                logger.info("Аdd another reference to existing file %s", img_filename)
+                logger.debug("Adding another reference to existing file %s", img_filename)
                 with open(img_filename, encoding="utf-8") as page:
                     for match in re.findall(pattern=image_reference_pattern, string=page.read()):
                         file_header += match

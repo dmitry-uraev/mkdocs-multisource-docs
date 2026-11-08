@@ -11,7 +11,6 @@ from gitlab import Gitlab
 from gitlab.v4.objects import Project
 
 from mkdocs_multisource_docs.src.config import DocRepository, GitLabSourceConfig, resolve_secret
-from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,7 @@ class GitLabRepositorySource:
 
     def _initialize_gitlab(self) -> Gitlab:
         """Initialize the python-gitlab client."""
-        logger.info("Initializing GitLab connection for %s", self._source_config.host)
+        logger.debug("Initializing GitLab connection for %s", self._source_config.host)
         return Gitlab(url=self._source_config.host, private_token=self._token)
 
     def get_repositories(self) -> list[Project | Any]:
@@ -47,12 +46,12 @@ class GitLabRepositorySource:
             for project in self._gitlab.projects.list(iterator=True)
             if project.id in self._docs_ids
         ]
-        logger.info("Got GitLab repositories according to application config %s", repositories)
+        logger.info("Found %s configured GitLab repositories", len(repositories))
         return repositories
 
     def clone_repositories(self, repositories: list[Project], clone_path: Path) -> None:
         """Clone repositories into the common build directory."""
-        logger.info("Cloning GitLab repositories into %s", TMP_FOLDER_PATH)
+        logger.info("Cloning %s GitLab repositories", len(repositories))
         for repository in repositories:
             self._clone_repository(repository=repository, clone_path=clone_path)
 
@@ -62,7 +61,7 @@ class GitLabRepositorySource:
         repository_destination = clone_path / repository.name
 
         if repository_destination.exists():
-            logger.info("Removing existing directory: %s", repository_destination)
+            logger.debug("Removing existing directory: %s", repository_destination)
             shutil.rmtree(repository_destination)
 
         repository_url: str = repository.http_url_to_repo
@@ -91,17 +90,17 @@ class GitLabRepositorySource:
             str(repository_destination),
         ]
 
-        logger.info("Cloning repository %s from branch %s", repository.name, branch_name)
+        logger.info("Cloning repository %s (branch %s)", repository.name, branch_name)
         try:
             result = subprocess.run(clone_command, capture_output=True, text=True, check=True)
-            logger.info("Successfully cloned %s: %s", repository.name, result.stdout)
+            logger.debug("Successfully cloned %s: %s", repository.name, result.stdout)
         except subprocess.CalledProcessError as error:
             logger.error("Failed to clone %s: %s", repository.name, error.stderr)
             raise
 
     def download_repositories(self, repositories: list[Project], download_path: Path) -> None:
         """Download repositories as zip archives for the legacy workflow."""
-        logger.info("Downloading GitLab repositories into %s", TMP_FOLDER_PATH)
+        logger.info("Downloading %s GitLab repositories", len(repositories))
         for repository in repositories:
             self._download_repository(
                 repository=repository,

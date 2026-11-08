@@ -25,7 +25,7 @@ class CorpusManager:
 
     def __init__(self, artifacts_path: Path, application_config: AppConfig) -> None:
 
-        logger.info("Initializing CorpusManager for directory %s", TMP_FOLDER_PATH)
+        logger.debug("Initializing CorpusManager for directory %s", TMP_FOLDER_PATH)
         self._corpus = artifacts_path
         self._config = application_config
 
@@ -36,7 +36,7 @@ class CorpusManager:
         We iterate over downloaded unarchived folders and check their content
         :return: None
         """
-        logger.info("Extracting repository archives in %s", TMP_FOLDER_PATH)
+        logger.debug("Extracting repository archives in %s", TMP_FOLDER_PATH)
         repo_names = extract_archives_in_folder(folder_path=self._corpus)
 
         for file in self._corpus.iterdir():
@@ -45,13 +45,13 @@ class CorpusManager:
                     if file.name.startswith(repo_name):
                         self._move_doc_directory(file=file, doc=self._doc_map[repo_name])
 
-        logger.info("Moved documentation found into %s folder", BUILD_FOLDER_PATH)
-        logger.info("Deleting temporary folder %s", TMP_FOLDER_PATH)
+        logger.debug("Moved documentation found into %s folder", BUILD_FOLDER_PATH)
+        logger.debug("Deleting temporary folder %s", TMP_FOLDER_PATH)
         shutil.rmtree(self._corpus)
 
     @staticmethod
     def _move_doc_directory(file: Path, doc: DocRepository):
-        logger.info("Found documentation for repository: %s", doc.name)
+        logger.debug("Found documentation for repository: %s", doc.name)
         shutil.move(src=file, dst=BUILD_FOLDER_PATH / doc.name)
 
 
@@ -76,10 +76,10 @@ def extract_archives_in_folder(folder_path: Path) -> list:
     repo_names = []
     for file in folder_path.iterdir():
         if str(file).endswith(".zip"):
-            logger.info("Extracting archive from %s", TMP_FOLDER_PATH / file)
+            logger.debug("Extracting archive from %s", TMP_FOLDER_PATH / file)
             extract_archive(archive_path=file, destination_path=TMP_FOLDER_PATH)
             repo_names.extend(re.findall(pattern=pattern, string=str(file)))
-    logger.info("Extracted archives for the following repositories %s", repo_names)
+    logger.debug("Extracted archives for the following repositories %s", repo_names)
     return repo_names
 
 

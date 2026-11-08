@@ -27,6 +27,25 @@ file collection.
 | `exclude_images` | no | `[]` | PNG filenames excluded from generated image documentation. |
 | `generate_index` | no | `false` | Generate a root index page listing configured repositories. |
 | `navigation` | no | `mode: manual` | Configure generated navigation. |
+| `link_check` | no | `warning` | Cross-repository link validation mode: `strict`, `warning`, or `off`. |
+
+## Cross-repository links
+
+Add `multisource-ref` to an ordinary Markdown link to point to a file from a
+collected repository:
+
+```markdown
+[Naming metrics](https://gitlab.example.com/fallback){multisource-ref="example-repo:docs/HOWTO/naming_metrics.md#overview"}
+```
+
+The plugin resolves the reference to the collected source file and preserves
+the optional anchor; MkDocs then generates the final site URL. The fallback URL
+is used unchanged when the referenced repository or file cannot be resolved in
+`warning` or `off` mode. In `strict` mode, an unresolved reference fails the
+build. The `multisource-ref` attribute is removed before the final HTML is
+generated. As in MkDocs itself,
+`README.md` is rendered as `index.html`; reference it as `README.md` in
+`multisource-ref`.
 
 ## Repository options
 
@@ -36,10 +55,22 @@ file collection.
 | `source` | yes | — | Source-specific settings. |
 | `branch` | no | `main` | Branch for remote sources. Ignored by local sources. |
 | `docs_root` | no | `.` | Documentation directory inside the repository. |
+| `web_url` | no | `null` | Repository web URL used for folders and non-Markdown file links. |
 | `navigation` | no | enabled | Repository settings used by auto navigation. |
 | `javadoc` | no | `false` | Enable JavaDoc generation. |
 | `javadoc_command` | no | Maven default | Custom JavaDoc command. |
 | `javadoc_relative_dir` | no | `null` | Directory from which JavaDoc is generated. |
+
+The plugin initially collects only Markdown files below `docs_root`. It then
+adds local files referenced by those pages, such as images, HTML, SVG, PDF, or
+JSON resources, including references that resolve outside `docs_root`. Other
+repository files are not added to the MkDocs file collection.
+
+When `web_url` is configured, ordinary relative links from collected repository
+pages to folders or non-Markdown files are redirected to the repository web
+interface. Folders use `/-/tree/<branch>/...`; files use
+`/-/blob/<branch>/...`. Markdown links remain internal MkDocs links, and image
+links are left unchanged.
 
 ## Sources
 

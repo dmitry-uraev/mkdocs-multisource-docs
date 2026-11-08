@@ -43,7 +43,7 @@ class LocalRepositorySource:
             destination_path = clone_path / repository.name
 
             if destination_path.exists():
-                logger.info("Removing existing local repository directory: %s", destination_path)
+                logger.debug("Removing existing local repository directory: %s", destination_path)
                 shutil.rmtree(destination_path)
 
             logger.info("Copying local repository %s", repository.name)

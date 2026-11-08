@@ -37,12 +37,37 @@ class DocumentManifestTest(unittest.TestCase):
                 },
             )
 
-    def test_build_normalizes_hidden_docs_root(self):
+    def test_build_maps_readme_to_index(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            build_folder = Path(temporary_directory)
+            document = build_folder / "example-repo" / "README.md"
+            document.parent.mkdir(parents=True)
+            document.write_text("# Example repository\n", encoding="utf-8")
+
+            config = AppConfig(
+                repositories=[
+                    DocRepository(
+                        name="example-repo",
+                        source=LocalSourceConfig(type="local", path="."),
+                    )
+                ],
+            )
+
+            manifest = DocumentManifest.build(build_folder, config)
+
+            self.assertEqual(
+                manifest.documents["example-repo:README.md"],
+                "/example-repo/index.html",
+            )
+
+    def test_build_preserves_hidden_docs_root(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             build_folder = Path(temporary_directory)
             document = build_folder / "example-repo" / ".docs" / "guide.md"
             document.parent.mkdir(parents=True)
-            document.write_text("# Guide\n", encoding="utf-8")
+            document.write_text("# Guide\n\n[Reference](reference.html)\n", encoding="utf-8")
+            resource = build_folder / "example-repo" / ".docs" / "reference.html"
+            resource.write_text("<h1>Guide</h1>\n", encoding="utf-8")
 
             config = AppConfig(
                 repositories=[
@@ -59,7 +84,11 @@ class DocumentManifestTest(unittest.TestCase):
 
             self.assertEqual(
                 manifest.documents["example-repo:.docs/guide.md"],
-                "/example-repo/docs/guide.html",
+                "/example-repo/.docs/guide.html",
+            )
+            self.assertEqual(
+                manifest.documents["example-repo:.docs/reference.html"],
+                "/example-repo/.docs/reference.html",
             )
 
     def test_write_uses_manifest_schema(self):

@@ -78,11 +78,15 @@ def build_javadocs(app_conf: AppConfig) -> None:
     Iterates over DocRepository objects in AppConfig
     Calls build_javadoc function for each appropriate repository
     """
-    logger.info("Building API documentation...")
-    for repo in app_conf.DOCS_REPOSITORIES:
-        if repo.javadoc:
-            build_javadoc(
-                BUILD_FOLDER_PATH / repo.name,
-                repo.javadoc_command if repo.javadoc_command else None,
-                relative_directory=repo.javadoc_relative_dir if repo.javadoc_relative_dir else None,
-            )
+    repositories_with_javadoc = [repo for repo in app_conf.DOCS_REPOSITORIES if repo.javadoc]
+    if not repositories_with_javadoc:
+        logger.debug("JavaDoc generation is not configured")
+        return
+
+    logger.info("Building API documentation for %s repositories", len(repositories_with_javadoc))
+    for repo in repositories_with_javadoc:
+        build_javadoc(
+            BUILD_FOLDER_PATH / repo.name,
+            repo.javadoc_command if repo.javadoc_command else None,
+            relative_directory=repo.javadoc_relative_dir if repo.javadoc_relative_dir else None,
+        )
