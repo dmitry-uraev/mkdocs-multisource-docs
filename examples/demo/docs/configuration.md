@@ -1,33 +1,45 @@
-# Configuration
+# Demo configuration
 
-The plugin is enabled in `mkdocs.yml`:
+This page describes only the configuration specific to the runnable demo.
+The complete plugin reference is maintained in the root documentation under
+`docs/configuration.md`.
+
+## Standalone demo
+
+The demo configures two local repository-like sources in `mkdocs.yml`:
 
 ```yaml
 plugins:
   - multisource-docs:
-      multisource_config: application.local.json
+      repositories:
+        - name: demo-api
+          source:
+            type: local
+            path: sources
+          docs_root: docs
+        - name: demo-platform
+          source:
+            type: local
+            path: sources
+          docs_root: docs
+      navigation:
+        mode: manual
 ```
 
-The application configuration describes the repositories that should be
-included in the site:
+The directories expected by this configuration are:
 
-```json
-{
-  "SOURCE": "local",
-  "LOCAL_SOURCE_PATH": "sources",
-  "DOCS_REPOSITORIES": [
-    {
-      "name": "demo-api",
-      "repo_id": 0,
-      "branch": "demo",
-      "docs_root": "docs"
-    }
-  ],
-  "EXCLUDE_IMAGES": [],
-  "GENERATE_INDEX": false
-}
+```text
+examples/demo/sources/
+├── demo-api/docs/
+└── demo-platform/docs/
 ```
 
-For a GitLab project, omit `SOURCE` or set it to `gitlab`, then provide
-`GIT_HOST`, `GIT_READ_TOKEN`, and the GitLab repository IDs. The remaining
-Markdown processing is the same for both sources.
+Build the standalone demo from this directory:
+
+```bash
+poetry run mkdocs build --clean
+```
+
+The root project documentation uses the same source directories with paths
+relative to `docs/mkdocs.yml` and includes their practical examples in the
+**Demo examples** section.

@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, DocRepository
+from mkdocs_multisource_docs.src.config import AppConfig, DocRepository, LocalSourceConfig
 from mkdocs_multisource_docs.src.manifest import DocumentManifest
 
 
@@ -16,17 +16,14 @@ class DocumentManifestTest(unittest.TestCase):
             document.write_text("# Naming metrics\n", encoding="utf-8")
 
             config = AppConfig(
-                GIT_HOST="https://gitlab.example.com",
-                GIT_READ_TOKEN="token",
-                DOCS_REPOSITORIES=[
+                repositories=[
                     DocRepository(
                         name="example-repo",
-                        repo_id=1,
+                        source=LocalSourceConfig(type="local", path="."),
                         branch="develop",
                         docs_root="docs",
                     )
                 ],
-                EXCLUDE_IMAGES=[],
             )
 
             manifest = DocumentManifest.build(build_folder, config)
@@ -48,17 +45,14 @@ class DocumentManifestTest(unittest.TestCase):
             document.write_text("# Guide\n", encoding="utf-8")
 
             config = AppConfig(
-                GIT_HOST="https://gitlab.example.com",
-                GIT_READ_TOKEN="token",
-                DOCS_REPOSITORIES=[
+                repositories=[
                     DocRepository(
                         name="example-repo",
-                        repo_id=1,
+                        source=LocalSourceConfig(type="local", path="."),
                         branch="main",
                         docs_root=".docs",
                     )
                 ],
-                EXCLUDE_IMAGES=[],
             )
 
             manifest = DocumentManifest.build(build_folder, config)

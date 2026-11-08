@@ -4,41 +4,48 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from urllib.parse import urlparse, urlunparse
 
 from gitlab import Gitlab
 from gitlab.v4.objects import Project
 
-from mkdocs_multisource_docs.src.config import AppConfig
+from mkdocs_multisource_docs.src.config import DocRepository, GitLabSourceConfig, resolve_secret
 from mkdocs_multisource_docs.src.constants import TMP_FOLDER_PATH
 
 logger = logging.getLogger(__name__)
 
 
 class GitLabRepositorySource:
-    """Collect and clone repositories from GitLab."""
+    """Collect and clone configured repositories from GitLab."""
 
-    def __init__(self, application_config: AppConfig) -> None:
-        self._config = application_config
+    def __init__(self, repositories: list[DocRepository]) -> None:
+        if not repositories or not isinstance(repositories[0].source, GitLabSourceConfig):
+            raise ValueError("GitLab source requires at least one GitLab repository")
+
+        self._repositories = repositories
+        self._source_config = cast(GitLabSourceConfig, repositories[0].source)
+        self._token = resolve_secret(self._source_config.token_env)
         self._gitlab = self._initialize_gitlab()
-        self._docs_list = [repo.name for repo in self._config.DOCS_REPOSITORIES]
-        self._docs_ids = [repo.repo_id for repo in self._config.DOCS_REPOSITORIES]
+        self._docs_ids = {
+            cast(GitLabSourceConfig, repository.source).project_id for repository in repositories
+        }
         self._docs_map = {
-            repository.name: repository for repository in self._config.DOCS_REPOSITORIES
+            cast(GitLabSourceConfig, repository.source).project_id: repository
+            for repository in repositories
         }
 
     def _initialize_gitlab(self) -> Gitlab:
         """Initialize the python-gitlab client."""
-        logger.info("Initializing GitLab connection for %s", self._config.GIT_HOST)
-        return Gitlab(url=self._config.GIT_HOST, private_token=self._config.GIT_READ_TOKEN)
+        logger.info("Initializing GitLab connection for %s", self._source_config.host)
+        return Gitlab(url=self._source_config.host, private_token=self._token)
 
     def get_repositories(self) -> list[Project | Any]:
         """Return repositories selected by the application configuration."""
         repositories = [
             project
             for project in self._gitlab.projects.list(iterator=True)
-            if project.name in self._docs_list and project.id in self._docs_ids
+            if project.id in self._docs_ids
         ]
         logger.info("Got GitLab repositories according to application config %s", repositories)
         return repositories
@@ -63,7 +70,7 @@ class GitLabRepositorySource:
         authenticated_url = urlunparse(
             (
                 parsed_url.scheme,
-                f"oauth2:{self._config.GIT_READ_TOKEN}@{parsed_url.netloc}",
+                f"oauth2:{self._token}@{parsed_url.netloc}",
                 parsed_url.path,
                 parsed_url.params,
                 parsed_url.query,
@@ -71,10 +78,8 @@ class GitLabRepositorySource:
             )
         )
 
-        repository_config = self._docs_map.get(repository.name)
-        branch_name = (
-            repository_config.branch if repository_config and repository_config.branch else "main"
-        )
+        repository_config = self._docs_map.get(repository.id)
+        branch_name = repository_config.branch if repository_config else "main"
         clone_command = [
             "git",
             "clone",
@@ -117,7 +122,7 @@ class GitLabRepositorySource:
             return
 
         with open(file=archive_path, mode="wb") as archive:
-            repository_config = self._docs_map.get(repository.name)
+            repository_config = self._docs_map.get(repository.id)
             if repository_config is None:
                 repository.repository_archive(format="zip", streamed=True, action=archive.write)
             else:

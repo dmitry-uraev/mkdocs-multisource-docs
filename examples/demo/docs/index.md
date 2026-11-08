@@ -1,19 +1,18 @@
-# mkdocs-multisource-docs
+# Demo project
 
-The plugin combines documentation from multiple repositories into one MkDocs
-site. This site is both the plugin documentation and a working example.
+This directory is a runnable example project for `mkdocs-multisource-docs`.
+Its configuration is in `mkdocs.yml`, and its two repository-like sources are
+in `sources/`.
 
-## What this demo shows
+The root project documentation builds the same sources through the plugin.
+The pages under `docs/` explain the demo scenarios; the pages under
+`sources/` are the documentation that the plugin collects.
 
-- the main project documentation is stored in this `docs/` directory;
-- additional documentation is collected from two repository-like directories;
-- all sources are assembled into one site during the MkDocs build;
-- the same pipeline can use a remote repository source in a real project.
+Build this project independently with:
 
-Continue with:
+```bash
+poetry run mkdocs build --clean
+```
 
-- [Configuration](configuration.md)
-- [Repository sources](sources.md)
-
-The generated navigation also contains the collected API and platform
-documentation from the two configured sources.
+See the [demo configuration](configuration.md) and the [source layout](sources.md)
+for the details.

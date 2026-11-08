@@ -1,12 +1,26 @@
-# Collected API documentation
+# Local source configuration
 
-This page is collected from the local `demo-api` repository and published as
-part of the plugin documentation site.
+This page is collected into the root documentation site from the local
+`demo-api` source.
 
-## Endpoint example
+Use a local source when documentation is available in a directory on disk:
 
-```http
-GET /api/v1/status
+```yaml
+plugins:
+  - multisource-docs:
+      repositories:
+        - name: demo-api
+          source:
+            type: local
+            path: examples/demo/sources
+          docs_root: docs
 ```
 
-See the [API guide](guide.md) for more details.
+The directory below `path` must have the repository name:
+
+```text
+examples/demo/sources/demo-api/docs/index.md
+```
+
+The same configuration is used by both the standalone demo and the root
+documentation site.

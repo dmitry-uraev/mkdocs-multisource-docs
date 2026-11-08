@@ -6,7 +6,7 @@ import logging
 import re
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, get_application_config
+from mkdocs_multisource_docs.src.config import AppConfig, get_demo_application_config
 from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
 
 logger = logging.getLogger(__name__)
@@ -130,8 +130,9 @@ class MarkdownProcessing:
 
 
 if __name__ == "__main__":
-    from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
+    from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
 
-    config = get_application_config(config_path=TEST_APPLICATION_CONF)
-    md_manager = MarkdownProcessing(application_config=config, docs_folder=BUILD_FOLDER_PATH)
-    md_manager.process_doc_folder()
+    MarkdownProcessing(
+        application_config=get_demo_application_config(),
+        docs_folder=BUILD_FOLDER_PATH,
+    ).process_doc_folder()

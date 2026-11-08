@@ -12,4 +12,20 @@ nav:
 
 plugins:
   - multisource-docs:
-      multisource_config: application.local.json
+      repositories:
+        - name: demo-api
+          source:
+            type: local
+            path: sources
+          branch: demo
+          docs_root: docs
+        - name: demo-platform
+          source:
+            type: local
+            path: sources
+          branch: demo
+          docs_root: docs
+      exclude_images: []
+      generate_index: false
+      navigation:
+        mode: manual

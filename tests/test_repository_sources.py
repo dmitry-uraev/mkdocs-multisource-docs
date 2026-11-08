@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, DocRepository
+from mkdocs_multisource_docs.src.config import DocRepository, LocalSourceConfig
 from mkdocs_multisource_docs.src.repository_sources.local import LocalRepositorySource
 
 
@@ -15,24 +15,19 @@ class LocalRepositorySourceTest(unittest.TestCase):
             (repository_path / "docs").mkdir(parents=True)
             (repository_path / "docs" / "index.md").write_text("# Demo\n", encoding="utf-8")
 
-            config = AppConfig(
-                SOURCE="local",
-                LOCAL_SOURCE_PATH="sources",
-                DOCS_REPOSITORIES=[
-                    DocRepository(
-                        name="demo-repo",
-                        repo_id=0,
-                        branch="demo",
-                        docs_root="docs",
-                    )
-                ],
-                EXCLUDE_IMAGES=[],
-            )
-            source = LocalRepositorySource(config, root)
+            repositories = [
+                DocRepository(
+                    name="demo-repo",
+                    source=LocalSourceConfig(type="local", path="sources"),
+                    branch="demo",
+                    docs_root="docs",
+                )
+            ]
+            source = LocalRepositorySource(repositories, root)
             destination = root / "build"
 
-            repositories = source.get_repositories()
-            source.clone_repositories(repositories, destination)
+            source_repositories = source.get_repositories()
+            source.clone_repositories(source_repositories, destination)
 
             self.assertEqual(
                 (destination / "demo-repo" / "docs" / "index.md").read_text(encoding="utf-8"),
