@@ -2,6 +2,9 @@ site_name: mkdocs-multisource-docs
 docs_dir: .
 use_directory_urls: false
 
+theme:
+  name: material
+
 nav:
   - Plugin: index.md
   - Configuration: configuration.md

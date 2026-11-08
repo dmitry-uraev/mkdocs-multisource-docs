@@ -43,13 +43,19 @@ export GITLAB_TOKEN=glpat-...
 mkdocs build
 ```
 
-See the [full configuration reference](docs/configuration.md). Build the
-repository documentation with:
+See the [full configuration reference](docs/configuration.md) for local
+sources, navigation, image handling, and JavaDoc options.
+
+## Repository documentation
+
+This section is for contributors who want to build the documentation of this
+repository itself. Install the published plugin and the Material for MkDocs
+theme, then build the site:
 
 ```bash
-poetry run mkdocs build -f docs/mkdocs.yml
+python -m pip install mkdocs-multisource-docs mkdocs-material
+mkdocs build --config-file docs/mkdocs.yml
 ```
-for local sources, navigation, image handling, and JavaDoc options.
 
 ## Configuration
 
@@ -141,11 +147,12 @@ navigation:
 
 The repository contains a self-contained documentation site in
 [`examples/demo`](examples/demo). It uses two local repository-like sources
-and can be built without network access:
+and can be built without network access after the dependencies are installed:
 
 ```bash
+python -m pip install mkdocs-multisource-docs mkdocs-material
 cd examples/demo
-poetry run mkdocs build --clean
+mkdocs build --clean
 ```
 
 ---
@@ -193,7 +200,7 @@ The `mkdocs-multisource-docs` plugin is open-source and can be used freely in an
 
 ---
 
-Version *2.0.0*
+Version *0.2.0*
 
 - Breaking: plugin configuration moved from a separate JSON file into `mkdocs.yml`.
 - Repository sources are configured independently for each repository.
