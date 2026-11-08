@@ -6,7 +6,7 @@ import logging
 import re
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, get_application_config
+from mkdocs_multisource_docs.src.config import AppConfig, get_demo_application_config
 from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
 
 logger = logging.getLogger(__name__)
@@ -57,6 +57,11 @@ class MarkdownProcessing:
         """
 
         logger.info("Generating documents for unreferenced .png images")
+        references_path = self._docs_folder / "references.md"
+        if not images:
+            references_path.unlink(missing_ok=True)
+            return
+
         total_generated_references = "\n\n"
         image_reference_pattern = r"!\[.*\]\(.*\.png\)"
 
@@ -100,7 +105,7 @@ class MarkdownProcessing:
 
         full = "\n# Undocumented images"
         full += total_generated_references
-        with open(file=self._docs_folder / "references.md", mode="w", encoding="utf-8") as index:
+        with open(file=references_path, mode="w", encoding="utf-8") as index:
             index.write(full)
 
     def get_images_without_references(self) -> list[Path]:
@@ -125,8 +130,9 @@ class MarkdownProcessing:
 
 
 if __name__ == "__main__":
-    from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
+    from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH
 
-    config = get_application_config(config_path=TEST_APPLICATION_CONF)
-    md_manager = MarkdownProcessing(application_config=config, docs_folder=BUILD_FOLDER_PATH)
-    md_manager.process_doc_folder()
+    MarkdownProcessing(
+        application_config=get_demo_application_config(),
+        docs_folder=BUILD_FOLDER_PATH,
+    ).process_doc_folder()

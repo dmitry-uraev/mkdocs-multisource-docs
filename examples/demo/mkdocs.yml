@@ -1,0 +1,31 @@
+site_name: mkdocs-multisource-docs demo
+docs_dir: docs
+use_directory_urls: false
+
+nav:
+  - Plugin: index.md
+  - Configuration: configuration.md
+  - Repository sources: sources.md
+  - Demo API: demo-api/docs/index.md
+  - API guide: demo-api/docs/guide.md
+  - Demo platform: demo-platform/docs/index.md
+
+plugins:
+  - multisource-docs:
+      repositories:
+        - name: demo-api
+          source:
+            type: local
+            path: sources
+          branch: demo
+          docs_root: docs
+        - name: demo-platform
+          source:
+            type: local
+            path: sources
+          branch: demo
+          docs_root: docs
+      exclude_images: []
+      generate_index: false
+      navigation:
+        mode: manual

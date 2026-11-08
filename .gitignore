@@ -1,5 +1,6 @@
 __pycache__
 .venv
+.env
 *.egg-info
 .DS_Store
 dist/
@@ -8,3 +9,8 @@ build/
 mt_source_tmp
 mt_source_jvd
 mt_source_build
+site/
+# quality
+.mypy_cache
+.pytest_cache
+.ruff_cache

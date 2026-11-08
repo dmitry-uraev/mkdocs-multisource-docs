@@ -8,7 +8,7 @@ import shutil
 import zipfile
 from pathlib import Path
 
-from mkdocs_multisource_docs.src.config import AppConfig, DocRepository, get_application_config
+from mkdocs_multisource_docs.src.config import AppConfig, DocRepository, get_demo_application_config
 from mkdocs_multisource_docs.src.constants import BUILD_FOLDER_PATH, TMP_FOLDER_PATH
 
 logger = logging.getLogger(__name__)
@@ -84,10 +84,8 @@ def extract_archives_in_folder(folder_path: Path) -> list:
 
 
 if __name__ == "__main__":
-    from mkdocs_multisource_docs.src.constants import TEST_APPLICATION_CONF
-
     corpus_manager = CorpusManager(
         artifacts_path=TMP_FOLDER_PATH,
-        application_config=get_application_config(config_path=TEST_APPLICATION_CONF),
+        application_config=get_demo_application_config(),
     )
     corpus_manager.extract_documentation_from_artifacts()

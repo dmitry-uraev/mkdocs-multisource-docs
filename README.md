@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/pypi/l/mkdocs-multisource-docs)
 ![Python versions](https://img.shields.io/pypi/pyversions/mkdocs-multisource-docs)
 
-The `mkdocs-multisource-docs` plugin is designed to automate the process of collecting documentation from multiple GitLab repositories and integrating it into the documentation of the current repository. This is particularly useful for projects that rely on documentation spread across multiple repositories, ensuring a unified and up-to-date documentation experience.
+The `mkdocs-multisource-docs` plugin is designed to automate the process of collecting documentation from multiple repositories and integrating it into the documentation of the current repository. This is particularly useful for projects that rely on documentation spread across multiple repositories, ensuring a unified and up-to-date documentation experience.
 
 ## Key Features
 
@@ -12,88 +12,140 @@ The `mkdocs-multisource-docs` plugin is designed to automate the process of coll
 - **Undocumented image documentation generation**: automatically generate documentation for images that lack descriptions.
 - **JavaDoc generation**: Automatically generate and include JavaDoc for Java projects.
 
----
+## Installation
+
+```bash
+pip install mkdocs-multisource-docs
+```
 
 ## Quick Start
 
-1. Install the plugin:
+Add the plugin to `mkdocs.yml` and configure one repository:
 
-   Install the plugin using pip:
+```yaml
+plugins:
+  - multisource-docs:
+      repositories:
+        - name: api
+          source:
+            type: gitlab
+            host: https://gitlab.example.com
+            project_id: 12345
+            token_env: GITLAB_TOKEN
+          branch: main
+          docs_root: docs
+```
 
-    ```bash
-    pip install mkdocs-multisource-docs
-    ```
+Set the token in the environment and build the site:
 
-2. Add the plugin to your `mkdocs.yml`:
+```bash
+export GITLAB_TOKEN=glpat-...
+mkdocs build
+```
 
-   Include the plugin in your MkDocs configuration file and specify the path to the configuration file:
+See the [full configuration reference](docs/configuration.md). Build the
+repository documentation with:
 
-    ```yaml
-    plugins:
-      - multisource-docs:
-          multisource_config: "./application.json"
-    ```
+```bash
+poetry run mkdocs build -f docs/mkdocs.yml
+```
+for local sources, navigation, image handling, and JavaDoc options.
 
-3. Configure the `application.json` file:
+## Configuration
 
-   Create a configuration file (`application.json`) to specify the GitLab host, token, and repositories to fetch documentation from. See the configuration details below.
+The plugin is configured directly in `mkdocs.yml`:
 
-### Configuration File Parameters
+```yaml
+plugins:
+  - multisource-docs:
+      repositories:
+        - name: api
+          source:
+            type: gitlab
+            host: https://gitlab.example.com
+            project_id: 12345
+            token_env: GITLAB_TOKEN
+          branch: main
+          docs_root: docs
 
-The `application.json` file is used to configure the plugin. Below is a table describing all the required parameters:
+        - name: local-guide
+          source:
+            type: local
+            path: ./sources
+          docs_root: docs
 
-| Parameter         | Description                                                                                                                                                                                                                                 | Example Value                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| GIT_HOST          | The GitLab host URL.                                                                                                                                                                                                                        | "https://gitlab.example.com" |
-| GIT_READ_TOKEN    | A GitLab access token with read permissions for the repositories.                                                                                                                                                                           | "glpat-xxxxxxxxxxxxxxxxxxxx" |
-| DOCS_REPOSITORIES | A list of repositories to fetch documentation from.                                                                                                                                                                                         | See below for structure      |
-| EXCLUDE_IMAGES    | (Optional) A list of image filenames to exclude from documentation.                                                                                                                                                                         | ["image1.png", "image2.png"] |
-| GENERATE_INDEX    | Set this parameter to `true` if you don’t have an entrypoint `index.md` file for your repositories. The plugin will automatically generate one for documentation. If you use your own `index.md` file, leave it empty or set it to `false`. | Defaults to `false`          |
+      exclude_images: []
+      generate_index: false
+      navigation:
+        mode: manual
+```
 
-Each repository may optionally define `docs_root`, the directory containing
-its documentation. It defaults to `.` (the repository root).
+Each repository declares its own source, so one site can combine GitLab,
+GitHub-compatible future sources, and local directories.
 
-#### DOCS_REPOSITORIES Structure
+### Secrets
 
-The `DOCS_REPOSITORIES` parameter is a list of objects, each representing a repository. Each object has the following fields:
+Tokens are referenced by environment variable name and are never stored in
+the YAML configuration:
 
-| Field                | Description                                                                                                                                                                                                                                                                                                               | Example Value                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| name                 | The name of the repository.                                                                                                                                                                                                                                                                                               | "my-repo"                                                 |
-| repo_id              | The ID of the repository.                                                                                                                                                                                                                                                                                                 | 12345                                                     |
-| branch               | The branch of the repository to fetch documentation from.                                                                                                                                                                                                                                                                 | "main"                                                    |
-| javadoc              | Add this parameter to repository definition if you need to build Javadoc for it. **Note**: there should be access to javadoc executable in the environment to build document. Javadoc build increases documentation build time. Javadoc documentation will be available for linking as `/apidocs/<repo-name>/index.html`. | Defaults to `false`                                       |
-| javadoc_command      | This is an optional parameter that is used to specify a specific Javadoc execution command with additional possible arguments. **Note**: Applies only if `javadoc` is set to `true`.                                                                                                                                      | Defaults to `mvn javadoc:aggregate -Ddoclint=none -quiet` |
-| javadoc_relative_dir | This is an optional parameter that is used to specify a certain path within the documentation repository where source code files for Javadoc docs are located. **Note**: Applies only if `javadoc` is set to `true`.                                                                                                      | Defaults to `None`                                        |
+```yaml
+token_env: GITLAB_TOKEN
+```
 
-Example **application.json**
+The plugin resolves the value from the process environment first and from a
+local `.env` file second:
 
-```json
-{
-    "GIT_HOST": "https://gitlab.example.com",
-    "GIT_READ_TOKEN": "glpat-xxxxxxxxxxxxxxxxxxxx",
-    "DOCS_REPOSITORIES": [
-        {
-            "name": "my-repo-1",
-            "repo_id": 12345,
-            "branch": "main",
-            "docs_root": "docs",
-            "javadoc": true,
-            "javadoc_command": "mvn clean install javadoc:aggregate",
-            "javadoc_relative_dir": "/sources/files/folder"
-        },
-        {
-            "name": "my-repo-2",
-            "repo_id": 67890,
-            "branch": "dev"
-        }
-    ],
-    "EXCLUDE_IMAGES": [
-        "logo.png",
-        "example.png"
-    ],
-    "GENERATE_INDEX": false
-}
+```dotenv
+GITLAB_TOKEN=glpat-...
+```
+
+Keep `.env` out of version control.
+
+### Navigation
+
+In manual mode, use the standard MkDocs `nav` configuration. The plugin does
+not override it:
+
+```yaml
+nav:
+  - Home: index.md
+  - API: api/docs/index.md
+  - Platform: platform/docs/index.md
+```
+
+In automatic mode, the plugin adds configured repositories to the navigation:
+
+```yaml
+plugins:
+  - multisource-docs:
+      navigation:
+        mode: auto
+        title: External documentation
+        position: after
+```
+
+Per-repository navigation options are available in automatic mode:
+
+```yaml
+navigation:
+  enabled: true
+  title: API documentation
+  include:
+    - "*.md"
+  exclude:
+    - "internal/**"
+  order: 10
+```
+
+## Demo and documentation
+
+The repository contains a self-contained documentation site in
+[`examples/demo`](examples/demo). It uses two local repository-like sources
+and can be built without network access:
+
+```bash
+cd examples/demo
+poetry run mkdocs build --clean
 ```
 
 ---
@@ -141,9 +193,16 @@ The `mkdocs-multisource-docs` plugin is open-source and can be used freely in an
 
 ---
 
-For more information, issues, or contributions, please visit the GitHub repository.
+Version *2.0.0*
 
----
+- Breaking: plugin configuration moved from a separate JSON file into `mkdocs.yml`.
+- Repository sources are configured independently for each repository.
+- GitLab and local sources were separated behind a common repository-source interface.
+- Access tokens are resolved securely from environment variables or `.env`.
+- Manual and automatic navigation modes were added with repository-level navigation settings.
+- A self-contained demo and root documentation site were added.
+- Temporary build directories are cleaned up after successful and failed builds.
+- Structured colored logging was added, and log messages use lazy formatting.
 
 Version *0.1.3*
 
@@ -153,4 +212,4 @@ Version *0.1.3*
 Version *0.1.2*
 
 - `GENERATE_INDEX` parameter specifies if plugin should automatically generate index.md file for documentation.
-- For each repository in `DOCS_REPOSITORIES` the `javadoc` parameter can now be specified to generate Javadoc alongside other docs.
+- For each repository in `repositories` the `javadoc` parameter can now be specified to generate Javadoc alongside other docs.

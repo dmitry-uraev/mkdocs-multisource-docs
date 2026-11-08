@@ -1,0 +1,30 @@
+site_name: mkdocs-multisource-docs
+docs_dir: .
+use_directory_urls: false
+
+nav:
+  - Plugin: index.md
+  - Configuration: configuration.md
+  - Repository sources: sources.md
+  - Demo examples:
+      - Local source: demo-api/docs/index.md
+      - Automatic navigation: demo-api/docs/guide.md
+      - GitLab source: demo-platform/docs/index.md
+
+plugins:
+  - multisource-docs:
+      repositories:
+        - name: demo-api
+          source:
+            type: local
+            path: ../examples/demo/sources
+          docs_root: docs
+        - name: demo-platform
+          source:
+            type: local
+            path: ../examples/demo/sources
+          docs_root: docs
+      exclude_images: []
+      generate_index: false
+      navigation:
+        mode: manual
