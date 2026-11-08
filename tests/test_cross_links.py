@@ -69,7 +69,7 @@ class CrossRepositoryLinksTest(unittest.TestCase):
     def test_redirects_folders_and_non_markdown_files_to_repository(self):
         markdown = (
             "[Folder](../../compiler/groovy/src/test/)\n"
-            "[Java](../../sdk/Pi.java)\n"
+            "[Java](../../sdk/transport/RequestRecord.java)\n"
             "[Markdown](../../docs/guide.md)\n"
             "![Image](../../assets/image.png)"
         )
@@ -84,7 +84,7 @@ class CrossRepositoryLinksTest(unittest.TestCase):
 
         result = resolve_repository_links(
             markdown=markdown,
-            source_path="repo/modules/diameter/Readme.md",
+            source_path="repo/modules/transport/Readme.md",
             repositories=repositories,
         )
 
@@ -93,7 +93,7 @@ class CrossRepositoryLinksTest(unittest.TestCase):
             result,
         )
         self.assertIn(
-            "https://gitlab.example.com/group/repo/-/blob/develop/sdk/Pi.java",
+            "https://gitlab.example.com/group/repo/-/blob/develop/sdk/transport/RequestRecord.java",
             result,
         )
         self.assertIn("[Markdown](../../docs/guide.md)", result)
