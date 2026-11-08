@@ -32,7 +32,7 @@ jobs:
           poetry config virtualenvs.in-project true
 
       - name: Install dependencies
-        run: poetry install --only main --with docs --no-interaction --no-ansi
+        run: poetry install --with docs --no-interaction --no-ansi
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
