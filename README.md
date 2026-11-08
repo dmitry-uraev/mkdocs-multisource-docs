@@ -9,6 +9,7 @@ The `mkdocs-multisource-docs` plugin is designed to automate the process of coll
 ## Key Features
 
 - **Multi-repository documentation collection**: automatically fetch and merge documentation from multiple GitLab repositories.
+- **Cross-repository links**: link to documentation files collected from other repositories.
 - **Undocumented image documentation generation**: automatically generate documentation for images that lack descriptions.
 - **JavaDoc generation**: Automatically generate and include JavaDoc for Java projects.
 
@@ -165,33 +166,6 @@ The following features are currently in development and will be available in fut
 - **GitHub support**: Extend the plugin to support fetching documentation from GitHub repositories.
 - **Enhanced image handling**: Improved support for handling and documenting images.
 
-### Cross-repository links: implementation plan
-
-The first implementation step is complete: after repositories are cloned, the
-plugin creates `mt_source_build/.multisource-manifest.json`. For example,
-`example-repo:docs/HOWTO/naming_metrics.md` is mapped to
-`/example-repo/docs/HOWTO/naming_metrics.html`. The manifest is an intermediate
-build artifact and is not copied into the final site; it is an implementation
-detail for the future cross-repository link resolver.
-
-The remaining work is planned in the following order:
-
-1. Resolve the plugin configuration path relative to `mkdocs.yml`, and add
-   explicit configuration for link checking (`strict`, `warning`, `off`).
-2. Parse the optional `multisource-ref="repository:path[#anchor]"` attribute
-   on ordinary Markdown links. Replace only `href`, preserve an anchor, and
-   remove the service attribute from generated HTML. Links without the
-   attribute must remain unchanged, including the GitLab URL fallback.
-3. Validate repository and document existence against the manifest, reporting
-   the source Markdown file and line number. Apply the configured strict,
-   warning, or off behavior.
-4. Normalize `.docs/...` paths to `docs/...` in the collected site, preserve
-   ordinary relative links inside the current repository, and make navigation
-   independent of incidental `.pages` files.
-5. Expand copied resource types to include SVG and PDF, then add unit and
-   integration coverage for relative links, cross-repository links, anchors,
-   missing repositories/files, and disabled-plugin fallback behavior.
-
 And more: Additional features to improve flexibility and usability.
 
 ## License
@@ -207,6 +181,9 @@ Version *0.2.0*
 - GitLab and local sources were separated behind a common repository-source interface.
 - Access tokens are resolved securely from environment variables or `.env`.
 - Manual and automatic navigation modes were added with repository-level navigation settings.
+- Cross-repository links were added with `multisource-ref`, link validation modes,
+  and repository fallbacks for links to non-Markdown files and folders.
+- Repository collection is limited to Markdown pages and their referenced resources.
 - A self-contained demo and root documentation site were added.
 - Temporary build directories are cleaned up after successful and failed builds.
 - Structured colored logging was added, and log messages use lazy formatting.

@@ -28,7 +28,7 @@ def timeit(func):
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         total_time = end_time - start_time
-        logger.info(
+        logger.debug(
             "Function %s took %.4f seconds with arguments args=%s kwargs=%s",
             func.__name__,
             total_time,

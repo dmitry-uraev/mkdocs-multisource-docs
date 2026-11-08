@@ -1,7 +1,6 @@
 """MkDocs plugin entrypoint."""
 
 import logging
-import os
 import shutil
 from fnmatch import fnmatch
 from pathlib import Path
@@ -16,9 +15,14 @@ from mkdocs_multisource_docs.src.constants import (
     JAVADOC_FOLDER_PATH,
     TMP_FOLDER_PATH,
 )
+from mkdocs_multisource_docs.src.cross_links import (
+    resolve_markdown_links,
+    resolve_repository_links,
+)
+from mkdocs_multisource_docs.src.file_collection import collect_repository_files
 from mkdocs_multisource_docs.src.logs import setup_root_logger
 from mkdocs_multisource_docs.src.main import main
-from mkdocs_multisource_docs.src.manifest import MANIFEST_FILENAME
+from mkdocs_multisource_docs.src.manifest import DocumentManifest
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +35,7 @@ class MultiSourceCollect(BasePlugin):
         ("exclude_images", config_options.Type(list, default=[])),
         ("generate_index", config_options.Type(bool, default=False)),
         ("navigation", config_options.Type(dict, default={})),
+        ("link_check", config_options.Choice(["strict", "warning", "off"], default="warning")),
     ]
 
     setup_root_logger()
@@ -43,6 +48,7 @@ class MultiSourceCollect(BasePlugin):
                 "exclude_images": self.config["exclude_images"],
                 "generate_index": self.config["generate_index"],
                 "navigation": self.config["navigation"],
+                "link_check": self.config["link_check"],
             }
         )
         if not self._application_config.repositories:
@@ -58,25 +64,48 @@ class MultiSourceCollect(BasePlugin):
             application_config=self._application_config,
             config_path=self._config_path,
         )
+        self._manifest = DocumentManifest.build(
+            build_folder=BUILD_FOLDER_PATH,
+            application_config=self._application_config,
+        )
 
-        for root, _, filenames in os.walk(BUILD_FOLDER_PATH):
-            for filename in filenames:
-                file_path = Path(root) / filename
-                if file_path.name == MANIFEST_FILENAME:
-                    continue
-                relative_path = file_path.relative_to(BUILD_FOLDER_PATH)
-                files.append(
-                    File(
-                        path=str(relative_path),
-                        src_dir=str(BUILD_FOLDER_PATH),
-                        dest_dir=config["site_dir"],
-                        use_directory_urls=config["use_directory_urls"],
-                    )
+        self._collected_files = collect_repository_files(
+            build_folder=BUILD_FOLDER_PATH,
+            application_config=self._application_config,
+        )
+        logger.info(
+            "Collected %s documentation files and referenced resources from %s repositories",
+            len(self._collected_files),
+            len(self._application_config.repositories),
+        )
+        for file_path in sorted(self._collected_files):
+            relative_path = file_path.relative_to(BUILD_FOLDER_PATH)
+            files.append(
+                File(
+                    path=str(relative_path),
+                    src_dir=str(BUILD_FOLDER_PATH),
+                    dest_dir=config["site_dir"],
+                    use_directory_urls=config["use_directory_urls"],
                 )
+            )
 
         if self._application_config.navigation.mode == "auto":
             self._configure_generated_navigation(config)
         return files
+
+    def on_page_markdown(self, markdown, *, page, config, files):
+        """Resolve explicit cross-repository references before Markdown parsing."""
+        markdown = resolve_repository_links(
+            markdown=markdown,
+            source_path=page.file.src_path,
+            repositories=self._application_config.repositories,
+        )
+        return resolve_markdown_links(
+            markdown=markdown,
+            source_path=page.file.src_path,
+            manifest=self._manifest,
+            mode=self._application_config.link_check,
+        )
 
     def _configure_generated_navigation(self, config) -> None:
         """Add collected repository pages to MkDocs navigation."""
@@ -92,7 +121,9 @@ class MultiSourceCollect(BasePlugin):
             docs_root = BUILD_FOLDER_PATH / repository.name / repository.docs_root
             index_path = Path(repository.navigation.index or "index.md")
             pages: list[dict] = []
-            for source_file in sorted(docs_root.rglob("*.md")):
+            for source_file in sorted(self._collected_files):
+                if source_file.suffix.lower() != ".md" or not source_file.is_relative_to(docs_root):
+                    continue
                 relative_path = source_file.relative_to(docs_root)
                 relative_name = relative_path.as_posix()
                 if navigation.include and not any(

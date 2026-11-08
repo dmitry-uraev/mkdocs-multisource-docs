@@ -69,6 +69,7 @@ class DocRepository(BaseModel):
     source: SourceConfig
     branch: str = "main"
     docs_root: str = "."
+    web_url: str | None = None
     navigation: RepositoryNavigationConfig = Field(default_factory=RepositoryNavigationConfig)
 
     # Javadoc
@@ -84,6 +85,7 @@ class AppConfig(BaseModel):
     exclude_images: list[str] = Field(default_factory=list)
     generate_index: bool = False
     navigation: NavigationConfig = Field(default_factory=NavigationConfig)
+    link_check: Literal["strict", "warning", "off"] = "warning"
 
     @property
     def DOCS_REPOSITORIES(self) -> list[DocRepository]:
